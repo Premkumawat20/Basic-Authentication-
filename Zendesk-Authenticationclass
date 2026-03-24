@@ -1,0 +1,41 @@
+public with sharing class ZendeskAuthentication {
+    public static void createticket(){
+
+        String header=System.Label.ZendeskUsername+':'+System.Label.ZendeskPassword;
+          //Blob headerBlob=Blob.valueOf(header);
+
+         String requestbody='{'+
+		'    "ticket": {'+
+		'        "comment": {'+
+		'            "body": "The smoke is very colorful."'+
+		'        },'+
+		'        "priority": "urgent",'+
+		'        "subject": "My printer is on fire!"'+
+		'    }'+
+		'}';
+
+        HttpRequest httpreq=new HttpRequest();
+        httpreq.setEndpoint('https://salesforce-89148.zendesk.com/api/v2/tickets');
+        httpreq.setMethod('POST');
+        httpreq.setBody(requestBody);
+        httpreq.setHeader('Accept', 'application/json'  );
+        httpreq.setHeader('Content-Type','application/json');
+        httpreq.setHeader('Authorization','Basic ' + EncodingUtil.base64Encode(Blob.valueOf(header)));
+       
+	
+        Http htt=new Http();
+        try {
+           
+            HttpResponse httresponse=htt.send(httpreq);
+            if(httresponse.getStatusCode()==201){
+                System.debug('Success'+httresponse.getBody());
+            }
+            else{
+                System.debug('Error'+httresponse.getBody());
+            }
+           } catch(Exception ex){
+                //
+            }
+            
+}
+}
