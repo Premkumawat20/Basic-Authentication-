@@ -1,0 +1,39 @@
+public class BasicAuthenticationFreshDesk {
+
+    public static void RetrieveTicket() {
+
+        String UserplusPassoword = '8sOPpvmZPKTDsFaLY1ex:X';
+
+        // We need to encode it to Base64 as basic authentication we need to encode it to base64 and the above is api Key + dummy passowrd 
+        // as per the doc https://developer.freshdesk.com/api/#introduction in authentication
+        // public static String base64Encode(Blob inputBlob)
+
+        Blob be = Blob.valueOf(UserplusPassoword);
+        String encodedvalue = EncodingUtil.base64Encode(be);
+
+        System.debug('blob value is :' + encodedvalue);
+
+        // EncodingUtil.base64Encode(Blob.valueOf(UserplusPassoword));
+
+        HttpRequest httpreq = new HttpRequest();
+        httpreq.setEndpoint('https://salesforce-helpdesk.freshdesk.com/api/v2/tickets/2');
+        httpreq.setMethod('GET');
+        httpreq.setHeader('Authorization', 'Basic ' + encodedvalue);
+
+        Http http = new Http();
+
+        try {
+
+            HttpResponse httresponse = http.send(httpreq);
+
+            if (httresponse.getStatusCode() == 201) {
+                System.debug('Success' + httresponse.getBody());
+            } else {
+                System.debug('Error' + httresponse.getBody());
+            }
+
+        } catch (Exception e) {
+
+        }
+    }
+}
